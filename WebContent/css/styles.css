@@ -1,0 +1,56 @@
+/* item styles */
+.item {
+	padding: 15px 0;
+	margin-right: auto;
+	margin-left: auto;
+	border-bottom: 1px solid #ccc;
+}
+
+.item p {
+	font-size: large;
+}
+
+.item h1 {
+	font-size: x-large;
+}
+
+.myinfo {
+	font-style: italic;
+}
+
+.commentinfo {
+	font-style: italic;
+	font-size: x-small;
+}
+
+.comment {
+	padding-top: 10px;
+	margin-left: 10%;
+	border-width:5px;	
+    border-bottom-style:double;
+}
+
+.comment p {
+	font-size: small;
+}
+
+form input {
+	margin: 5px 0px;
+}
+
+.description {
+	font-size: large;
+}
+
+#newComment {
+	margin-top: 10px; 
+}
+
+.totalprice {
+	padding: 10px 0;
+}
+
+.map {
+    height: 400px;
+	width: 100%;
+}
