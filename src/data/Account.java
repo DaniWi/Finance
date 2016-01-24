@@ -25,6 +25,14 @@ public class Account {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date altertionDate = new Date();
 
+	public void debit(double amount) {
+		this.accountBalance -= amount;
+	}
+	
+	public void credit(double amount) {
+		this.accountBalance += amount;
+	}
+	
 	public int getId() {
 		return id;
 	}

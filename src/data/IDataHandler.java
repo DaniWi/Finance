@@ -26,4 +26,6 @@ public interface IDataHandler {
 	Collection<Transaction> getAllTransactionFromAccount(int accountID) throws IllegalStateException;
 
 	User getUserLogin(String name, String password) throws IllegalStateException;
+	
+	Collection<User> getAllUsers() throws IllegalStateException;
 }

@@ -37,7 +37,7 @@
 						 </li>
 						 <%} else { %>
 						 <li>
-						 	<a href="logout.jsp" title="Logout"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Logout </a>
+						 	<a href="logout.jsp" title="Logout"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Logout (<%=session.getAttribute("Username") %>) </a>
 						 </li>
 						<% } %>
 					</ul>
@@ -57,9 +57,9 @@
 		<button id="AccountButton" class="btn btn-primary">Accounts</button>
 		<button id="NewTransactionButton" class="btn btn-primary">New Transaction</button>
 		<button id="AllTransactionButton" class="btn btn-primary">All Transaction</button>
-  		
+		
   		<div class="page-header">
-			<h1>Hello World, this is Finance 4.</h1>
+			<h1>Hello <%= session.getAttribute("Username") %>, this is Finance 4.</h1>
   		</div>
   		<div id="content">
 		</div>

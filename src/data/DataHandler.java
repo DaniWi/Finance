@@ -447,4 +447,22 @@ public class DataHandler implements IDataHandler {
 		return null;
 	}
 
+	@Override
+	public Collection<User> getAllUsers() throws IllegalStateException {
+		Session session = openSession();
+		
+		try {
+			session.beginTransaction();
+			Criteria cr = session.createCriteria(User.class);
+			List<User> results = cr.list();
+			session.getTransaction().commit();
+			return results;
+		} catch (HibernateException e) {
+			session.getTransaction().rollback();
+			throw new IllegalStateException("something went wrong by getting all users");
+		} finally {
+			session.close();
+		}
+	}
+
 }
