@@ -7,13 +7,13 @@ IDataHandler dataHandler = DataHandler.getInstance();
 
 <!-- onsubmit oder action, beides schon probiert, method="POST" bereits entfernt -->
 
-<form onsubmit="transaction(); return false;">
+<form id="transactionSubmit">
 	<fieldset class="form-group">
     	<label for="fromAccount">Choose your account</label>
      	<select class="form-control" id="fromAccount" name="fromAccount" required>
 	        <%
 	    	for (Account account : dataHandler.getAllAccountFromUser((int)session.getAttribute("ID"))) {
-	    		%><option><%= account.getName() %></option>
+	    		%><option value="<%= account.getName() %>"><%= account.getName() %></option>
 	    	<% } %>
      	</select>
 	</fieldset>
@@ -23,7 +23,7 @@ IDataHandler dataHandler = DataHandler.getInstance();
 	        <%
 	    	for (User user : dataHandler.getAllUsers()) {
 	    		for (Account account : dataHandler.getAllAccountFromUser(user.getId())) {
-	    			%><option><%= user.getName() + ": " + account.getName() + " #" + account.getId()%></option> <%
+	    			%><option value="<%= account.getName() %>"><%= user.getName() + ": " + account.getName() + " #" + account.getId()%></option> <%
 	    		}
 	    		
 	    	} %>

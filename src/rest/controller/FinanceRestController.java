@@ -25,12 +25,12 @@ import data.Transaction;
 
 @Path("user")
 public class FinanceRestController {
-	
+
 	@Path("/transaction/new")
 	@POST
 	public String newTransaction(@FormParam("userID") Integer userID, @FormParam("fromAccount") String fromAccount,
-			@FormParam("transferto") String toAccount, @FormParam("amount") double amount) {
-		
+			@FormParam("toAccount") String toAccount, @FormParam("amount") double amount) {
+
 		System.out.println("Hello from new Transaction method!");
 		IDataHandler dataHandler = DataHandler.getInstance();
 		for (Account account : dataHandler.getAllAccountFromUser(userID)) {
@@ -42,102 +42,101 @@ public class FinanceRestController {
 				return "Successfully transferred!";
 			}
 		}
-		
+
 		return "Failed to transfer!";
 	}
-	
+
 	@Path("/accounts")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<Account> getAllAccountsByUserAsJson(@Context HttpServletRequest req) {
-		HttpSession session= req.getSession(true);
-    	Integer userID = (Integer) session.getAttribute("ID");
+		HttpSession session = req.getSession(true);
+		Integer userID = (Integer) session.getAttribute("ID");
 		return DataHandler.getInstance().getAllAccountFromUser(userID);
 	}
-	
+
 	@Path("/accounts")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String getAllAccountsByUserAsHtml(@Context HttpServletRequest req) {
-		HttpSession session= req.getSession(true);
-    	Integer userID = (Integer) session.getAttribute("ID");
+		HttpSession session = req.getSession(true);
+		Integer userID = (Integer) session.getAttribute("ID");
 		return AccountsToBootstrapTable(DataHandler.getInstance().getAllAccountFromUser(userID));
 	}
-	
+
 	@Path("/transactions")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<Transaction> getAllTransactionsByUserAsJson(@Context HttpServletRequest req) {
-		HttpSession session= req.getSession(true);
-    	Integer userID = (Integer) session.getAttribute("ID");
+		HttpSession session = req.getSession(true);
+		Integer userID = (Integer) session.getAttribute("ID");
 		return DataHandler.getInstance().getAllTransactionFromUser(userID);
 	}
-	
+
 	@Path("/transactions")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String getAllTransactionsByUserAsHtml(@Context HttpServletRequest req) {
-		HttpSession session= req.getSession(true);
-    	Integer userID = (Integer) session.getAttribute("ID");
+		HttpSession session = req.getSession(true);
+		Integer userID = (Integer) session.getAttribute("ID");
 		return TransactionsToBootstrapTable(userID);
 	}
-	
+
 	private String AccountsToBootstrapTable(Collection<Account> accounts) {
 		String html = "<table class=\"table table-bordered\">";
 		html += "<thead><tr><th>Name</th><th>Type</th><th>Balance</th><th>Details</th></tr></thead>";
 		html += "<tbody>";
-		
-		for (Account account : accounts)  {
+
+		for (Account account : accounts) {
 			html += "<tr>";
-			html += "<td>" + account.getName() + "</td><td>" + account.getType() + "</td><td>" + account.getAccountBalance() + "</td>";
+			html += "<td>" + account.getName() + "</td><td>" + account.getType() + "</td><td>"
+					+ account.getAccountBalance() + "</td>";
 			html += "<td><button type=\"button\" class=\"btn btn-primary btn-xs\">Show</button></td>";
 			html += "</tr>";
 		}
-		
+
 		html += "</tbody></table>";
 		return html;
 	}
-	
+
 	private String TransactionsToBootstrapTable(int userID) {
 		IDataHandler dataHandler = DataHandler.getInstance();
-		
-		// LinkedHashSet notwendig, weil wenn ein User zwischen seinen Accounts überweist
+
+		// LinkedHashSet notwendig, weil wenn ein User zwischen seinen Accounts
+		// überweist
 		// würden in einer Collection 2 Einträge für dieselbe Transaction stehen
 		Set<Transaction> transactions = new LinkedHashSet<Transaction>();
 		for (Account account : dataHandler.getAllAccountFromUser(userID)) {
 			transactions.addAll(dataHandler.getAllTransactionFromAccount(account.getId()));
 		}
-		
+
 		// List necessarry for sorting (newest first)
 		List<Transaction> t = new ArrayList<>();
 		t.addAll(transactions);
-		
+
 		Collections.sort(t, new Comparator<Transaction>() {
 			public int compare(Transaction one, Transaction other) {
 				if (one.getDate().before(other.getDate())) {
 					return 1;
-				}
-				else if (one.getDate().after(other.getDate())) {
+				} else if (one.getDate().after(other.getDate())) {
 					return -1;
-				}
-				else {
+				} else {
 					return 0;
 				}
 			}
 		});
-		
+
 		String html = "<table class=\"table table-bordered\">";
 		html += "<thead><tr><th>Date</th><th>From</th><th>To</th><th>Out</th><th>In</th></tr></thead>";
 		html += "<tbody>";
-		
+
 		for (Transaction transaction : t) {
 			html += "<tr>";
 			html += "<td>" + DateUtility.toGmtString(transaction.getDate()) + "</td>";
-			
 
 			String from, to;
 			double in = 0, out = 0;
-			
+
 			if (transaction.getUserID() == userID) {
 				// from user's account
 				from = dataHandler.getAccountByID(transaction.getFromAccountID()).getName();
@@ -146,29 +145,35 @@ public class FinanceRestController {
 					// from & to user's account
 					to = dataHandler.getAccountByID(transaction.getToAccountID()).getName();
 					in = transaction.getAmount();
+				} else {
+					to = dataHandler.getUserByID(dataHandler.getAccountByID(transaction.getToAccountID()).getOwnerID())
+							.getName();
 				}
-				else {
-					to = dataHandler.getUserByID(dataHandler.getAccountByID(transaction.getToAccountID()).getOwnerID()).getName();
-				}
-			}
-			else {
+			} else {
 				// to user's account
-				from = dataHandler.getUserByID(dataHandler.getAccountByID(transaction.getFromAccountID()).getOwnerID()).getName();
+				from = dataHandler.getUserByID(dataHandler.getAccountByID(transaction.getFromAccountID()).getOwnerID())
+						.getName();
 				to = dataHandler.getAccountByID(transaction.getToAccountID()).getName();
 				in = transaction.getAmount();
 			}
-			
+
 			html += "<td>" + from + "</td><td>" + to + "</td>";
-			
-			if (out != 0) { html += "<td>" + out + "</td>"; }
-			else { html += "<td></td>"; }
-			
-			if (in != 0) { html += "<td>" + in + "</td>"; }
-			else { html += "<td></td>"; }
-			
+
+			if (out != 0) {
+				html += "<td>" + out + "</td>";
+			} else {
+				html += "<td></td>";
+			}
+
+			if (in != 0) {
+				html += "<td>" + in + "</td>";
+			} else {
+				html += "<td></td>";
+			}
+
 			html += "</tr>";
 		}
-		
+
 		html += "</tbody></table>";
 		return html;
 	}
