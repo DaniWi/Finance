@@ -1,0 +1,16 @@
+Projekt:
+läuft auf TomCat 8
+Postgres Datenbank mit Hibernate Anbindung
+
+Datenbank:
+Benutzername: postgres
+Passwort: user
+Datenbankname: finance
+
+https://github.com/DaniWi/Finance
+
+1.War-File von Github downloaden und in Eclipse importieren
+2.gradle eclipse ausführen, um alle Dependencies herunterzuladen
+3.in pgAdmin Datenbankfile importieren, damit Datenbank vorhanden ist
+4.In Eclipse Server starten
+5.Im Browser localhost:8080/Finance/ aufrufen, somit landet man auf der Startseite
