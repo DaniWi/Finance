@@ -33,19 +33,13 @@ public class FinanceRestController {
 
 		System.out.println("Hello from new Transaction method!");
 		IDataHandler dataHandler = DataHandler.getInstance();
-		for (Account account : dataHandler.getAllAccountFromUser(userID)) {
-			if (account.getName().equalsIgnoreCase(fromAccount)) {
-				int toAccountID = Integer.valueOf(toAccount.replaceAll("(.*)#", ""));
-				dataHandler.createTransaction(account.getId(), toAccountID, userID, amount);
-				account.debit(amount);
-				dataHandler.getAccountByID(toAccountID).credit(amount);
-				return "Successfully transferred!";
-			}
-		}
-
-		return "Failed to transfer!";
+		int fromAccountID = Integer.valueOf(fromAccount);
+		int toAccountID = Integer.valueOf(toAccount);
+		dataHandler.createTransaction(fromAccountID, toAccountID, userID, amount);
+		return "Successfully transferred!";
 	}
 
+	/*
 	@Path("/accounts")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +48,7 @@ public class FinanceRestController {
 		Integer userID = (Integer) session.getAttribute("ID");
 		return DataHandler.getInstance().getAllAccountFromUser(userID);
 	}
+	*/
 
 	@Path("/accounts")
 	@GET
@@ -64,6 +59,7 @@ public class FinanceRestController {
 		return AccountsToBootstrapTable(DataHandler.getInstance().getAllAccountFromUser(userID));
 	}
 
+	/*
 	@Path("/transactions")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -72,6 +68,7 @@ public class FinanceRestController {
 		Integer userID = (Integer) session.getAttribute("ID");
 		return DataHandler.getInstance().getAllTransactionFromUser(userID);
 	}
+	*/
 
 	@Path("/transactions")
 	@GET

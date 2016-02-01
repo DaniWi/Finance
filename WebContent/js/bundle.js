@@ -70,13 +70,11 @@
 					document.getElementById("transactionSubmit").addEventListener("submit", function(event){
 						event.preventDefault();
 						console.log("transaction");
-						var from = document.getElementById("fromAccount");
-						var fromAccount = from.options[from.selectedIndex].value;
-						var to = document.getElementById("transferto");
-						var toAccount = to.options[to.selectedIndex].value;
+						var fromAccountID = document.getElementById("fromAccount").value;
+						var toAccountID = document.getElementById("transferto").value;
 						var amount = document.getElementById("amount").value; 
 						var userID = document.getElementById("userID").value;
-						transaction(userID, fromAccount, toAccount, amount);
+						transaction(userID, fromAccountID, toAccountID, amount);
 					});
 				}
 			}

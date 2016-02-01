@@ -271,9 +271,40 @@ public class DataHandler implements IDataHandler {
 		trans.setUserID(userID);
 		trans.setAmount(amount);
 		trans.setDate(new Date());
+		
+		Session session = openSession();
+		
+		try {
+			session.beginTransaction();
 
-		// save transaction in database
-		saveObjectToDb(trans);
+			Criteria cr = session.createCriteria(Account.class);
+			cr.add(Restrictions.eq("id", fromAccountID));
+			List<Account> resultsFrom = cr.list();
+			Account fromAccount = resultsFrom.get(0);
+			fromAccount.debit(amount);
+			session.update(fromAccount);
+			
+			Criteria cr2 = session.createCriteria(Account.class);
+			cr2.add(Restrictions.eq("id", toAccountID));
+			List<Account> resultsTo = cr.list();
+			Account toAccount = resultsTo.get(0);
+			toAccount.credit(amount);
+			session.update(toAccount);
+
+			// commit
+			session.getTransaction().commit();
+			
+			// save transaction in database
+			saveObjectToDb(trans);
+		} catch (Exception e) {
+			// Exception -> rollback
+			session.getTransaction().rollback();
+			throw new IllegalStateException("something went wrong by getting the item list");
+		} finally {
+			// close session
+			session.close();
+		}
+		
 		return trans;
 	}
 

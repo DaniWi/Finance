@@ -13,7 +13,7 @@ IDataHandler dataHandler = DataHandler.getInstance();
      	<select class="form-control" id="fromAccount" name="fromAccount" required>
 	        <%
 	    	for (Account account : dataHandler.getAllAccountFromUser((int)session.getAttribute("ID"))) {
-	    		%><option value="<%= account.getName() %>"><%= account.getName() %></option>
+	    		%><option value="<%= account.getId() %>"><%= account.getName() %></option>
 	    	<% } %>
      	</select>
 	</fieldset>
@@ -23,7 +23,7 @@ IDataHandler dataHandler = DataHandler.getInstance();
 	        <%
 	    	for (User user : dataHandler.getAllUsers()) {
 	    		for (Account account : dataHandler.getAllAccountFromUser(user.getId())) {
-	    			%><option value="<%= account.getName() %>"><%= user.getName() + ": " + account.getName() + " #" + account.getId()%></option> <%
+	    			%><option value="<%= account.getId() %>"><%= user.getName() + ": " + account.getName()%></option> <%
 	    		}
 	    		
 	    	} %>
